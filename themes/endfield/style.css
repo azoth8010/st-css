@@ -1,17 +1,188 @@
 /* endfield — SillyTavern 全局自定义 CSS 美化
  *
- * 状态：骨架。没有任何成品美化规则。
- * 取向：亮 / 官网为主（用户 2026-11-12 偏好），游戏内系统外壳作为补充素材，
- *       不是对游戏内风格的否定。
- * 待定：具体配色、两套素材各管哪些部位、聊天区素材来源、字体方案。
+ * 亮色：官网纸墨语言；夜间：游戏内深炭黑 + 游戏内黄（prefers-color-scheme 自动切换）。
+ * 本批落地：语义变量区（亮/夜两套） + 欢迎页最近聊天条第一批规则。
+ * 其余章节（顶栏、设置、聊天楼层、底栏等）留待后续批次，不一次铺开。
  *
  * 约定：
- *   1. 本文件只写 CSS；根目录 build.py 会把内容注入主题 json 的 custom_css。
- *   2. 不引用本仓库或任何 GitHub 地址作为资源 URL（仓库是纯备份用途）。
- *   3. 第三方字体 / 图片若使用，需自行确认离线时的表现。
- *   4. 下划线开头的字段是本地注释，不会进入产物。
+ *   1. 只写 CSS；根目录 build.py 把本文件注入主题 json 的 custom_css。
+ *   2. 不引用本仓库自身地址作为资源 URL；第三方外链允许，需自行确认离线表现。
+ *   3. 下划线开头的 meta 字段是本地注释，不会进入产物。
  *
- * 章节骨架（占位，暂无规则）：
- *   :root 变量区 → 全局基础 → 顶栏 → 抽屉 / 弹窗 → 表单
- *   → 聊天楼层 → 底栏 → loading / 滚动条 → 移动端 → 扩展与状态适配
+ * 章节：1 全局基础 / 2 顶栏 / 3 抽屉弹窗 / 4 表单 / 5 欢迎页最近聊天条
+ *       6 聊天楼层 / 7 底栏 / 8 加载与滚动条 / 9 移动端 / 10 扩展与状态适配
  */
+
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,500..800&family=Outfit:wght@300;500;700&family=Space+Grotesk:wght@400;500;700&display=swap");
+
+/* 字体：Archivo 宽体替代官网宽体巨字，Outfit 替代几何标题字，Space Grotesk 用于等宽技术数字。
+   中文沿用系统黑体栈，不额外外链大体积中文字体；离线时整体回退系统字体。 */
+
+/* ===== 0. 语义变量（亮色为默认） ===== */
+:root{
+  --paper:#FFFFFF;
+  --surface:#FAFAFA;
+  --surface-2:#F2F2F2;
+  --surface-3:#E6E6E6;
+  --ink:#191919;
+  --ink-2:#626262;
+  --ink-3:#8A8A8A;
+  --line:#D9D9D9;
+  --line-strong:#B3B3B3;
+
+  --signal:#FFFA00;          /* 官网黄 */
+  --signal-ink:#191919;      /* 黄底上的墨字 */
+  --num-color:#FFFA00;       /* 欢迎页数值：官网黄 */
+  --num-bar:#FFFA00;         /* 数值短竖条 */
+  --float-ink:#191919;       /* 左缘竖条：官方黑 */
+
+  --act-bg:rgba(0,0,0,.05);
+  --act-line:rgba(0,0,0,.10);
+  --danger:#DE0909;
+  --glass:rgba(25,25,25,.075);
+  --edge:inset 0 0 0 1px rgba(25,25,25,.07);
+  --float:0 4px 14px rgba(25,25,25,.10),0 1px 3px rgba(25,25,25,.05);
+
+  --avatar-w:56px; --avatar-h:56px; --avatar-radius:0; --avatar-cut:0px;
+  --act-h:26px;
+  --font-sans:Arial,"Microsoft YaHei","Noto Sans SC",sans-serif;
+  --font-num:"Space Grotesk",ui-monospace,Consolas,monospace;
+  --font-display:"Archivo","Arial Black",sans-serif;
+  --font-latin:"Outfit",Arial,sans-serif;
+}
+
+/* ===== 0b. 夜间：只换值，不换结构 ===== */
+@media (prefers-color-scheme: dark){
+  :root{
+    --paper:#141414;
+    --surface:#1F1F1F;
+    --surface-2:#282828;
+    --surface-3:#383838;
+    --ink:#EDEDED;
+    --ink-2:#B3B3B3;
+    --ink-3:#8A8A8A;
+    --line:#383838;
+    --line-strong:#626262;
+
+    --signal:#FFEF0D;        /* 游戏内黄 */
+    --signal-ink:#191919;
+    --num-color:#FFEF0D;     /* 用户 2026-11-13 定：夜间数值切游戏内黄 */
+    --num-bar:#FFEF0D;
+    --float-ink:#FFEF0D;     /* 官方黑在深底不可见，夜间改游戏内黄 */
+
+    --act-bg:rgba(255,255,255,.08);
+    --act-line:rgba(255,255,255,.22);
+    --glass:rgba(255,255,255,.06);
+    --edge:inset 0 0 0 1px rgba(255,255,255,.10);
+    --float:0 4px 14px rgba(0,0,0,.35),0 1px 3px rgba(0,0,0,.25);
+  }
+}
+
+/* ===== 5. 欢迎页最近聊天条 / 选择聊天条目 ===== */
+
+/* 条：直角、底部细线、零偏移环境阴影；左缘竖条不拦截点击 */
+.select_chat_block{
+  position:relative;
+  border:0;
+  border-bottom:1px solid var(--line);
+  border-radius:0;
+  padding:10px 14px 10px 20px;
+  background:var(--surface);
+  box-shadow:var(--float);
+}
+.select_chat_block::before{
+  content:"";
+  position:absolute;left:0;top:25%;height:50%;width:3px;
+  background:var(--float-ink);
+  pointer-events:none;z-index:0;
+}
+.select_chat_block[highlight]{
+  background:var(--surface-3);
+  box-shadow:inset 3px 0 0 var(--signal);
+}
+
+/* 数值：右上日期、右下消息数与大小，两行右对齐；纯文本无块 */
+.select_chat_info{
+  display:grid;
+  grid-template-columns:auto auto;
+  grid-template-rows:auto auto;
+  justify-items:end;
+  align-items:baseline;
+  gap:2px 10px;
+  flex-wrap:nowrap;
+}
+.chat_messages_date{grid-column:1 / -1;grid-row:1;justify-self:end}
+.chat_messages_num {grid-column:1;grid-row:2}
+.chat_file_size    {grid-column:2;grid-row:2}
+.select_chat_block .select_chat_info > small{
+  font-family:var(--font-num);
+  font-variant-numeric:tabular-nums;
+  font-weight:700;
+  font-size:12px;
+  color:var(--num-color);
+  white-space:nowrap;
+}
+.select_chat_info > small::before{
+  content:"";
+  display:inline-block;
+  width:3px;height:.85em;
+  margin-right:6px;
+  vertical-align:-.06em;
+  background:var(--num-bar);
+}
+
+/* 头像：直角默认，尺寸/圆角/切角可调 */
+.select_chat_block .avatar,
+.mes .mesAvatarWrapper .avatar{
+  width:var(--avatar-w);
+  height:var(--avatar-h);
+  border-radius:var(--avatar-radius);
+  clip-path:polygon(0 0,calc(100% - var(--avatar-cut)) 0,
+                    100% var(--avatar-cut),100% 100%,0 100%);
+  object-fit:cover;
+}
+
+/* 运行时生成的三个操作按钮：只改外观，不动位置 */
+button[title="置顶聊天"],button[title="重命名聊天"],button[title="删除聊天"],
+button[title="Pin chat"],button[title="Rename chat"],button[title="Delete chat"]{
+  width:var(--act-h);
+  height:var(--act-h);
+  min-width:34px;
+  padding:0 10px;
+  border:0;
+  border-radius:999px;
+  background:var(--act-bg);
+  box-shadow:inset 0 0 0 1px var(--act-line);
+  color:var(--ink);
+  opacity:1 !important;      /* 覆盖 .opacity50p 与 .hoverglow:hover */
+  cursor:pointer;
+  transition:background-color .2s,color .2s;
+}
+button[title="置顶聊天"]:hover,button[title="重命名聊天"]:hover,
+button[title="Pin chat"]:hover,button[title="Rename chat"]:hover{
+  background:var(--surface-3);
+}
+button[title="已置顶聊天"],button[title="Pinned chat"]{
+  background:var(--signal);
+  color:var(--signal-ink);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.22);
+}
+button[title="删除聊天"]:hover,button[title="Delete chat"]:hover{
+  background:var(--danger);
+  color:#fff;
+}
+
+/* ===== 9. 窄屏：数值组整组右对齐换行，不挤压左侧文字 ===== */
+@media (max-width:700px){
+  :root{--avatar-w:40px;--avatar-h:40px}
+  .select_chat_info{gap:2px 8px}
+  .select_chat_block .select_chat_info > small{font-size:11px}
+}
+
+/* ===== 后续批次预留 =====
+   2 顶栏（窄图标条 + 当前项墨色灰框）
+   3 抽屉/弹窗（浅色设置页 + 圆 × 关闭 + 胶囊内圈线）
+   4 表单（胶囊下拉/开关/滑块）
+   6 聊天楼层（浅色模糊面板 + 顶部细高亮带）
+   7 底栏 / 8 加载与滚动条 / 10 扩展与状态适配
+*/

@@ -16,7 +16,7 @@
   ],
   "properties": {
     "name": { "type": "string" },
-    "blur_strength": { "type": "number", "minimum": 0 },
+    "blur_strength": { "type": "number", "minimum": 0, "maximum": 30, "$comment": "px, UI slider range 0-30 (index.html blur_strength)" },
     "main_text_color": { "type": "string", "pattern": "^rgba\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*(?:0|1|0?\\.\\d+)\\s*\\)$" },
     "italics_text_color": { "type": "string", "pattern": "^rgba\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*(?:0|1|0?\\.\\d+)\\s*\\)$" },
     "underline_text_color": { "type": "string", "pattern": "^rgba\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*(?:0|1|0?\\.\\d+)\\s*\\)$" },
@@ -26,16 +26,16 @@
     "user_mes_blur_tint_color": { "type": "string", "pattern": "^rgba\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*(?:0|1|0?\\.\\d+)\\s*\\)$" },
     "bot_mes_blur_tint_color": { "type": "string", "pattern": "^rgba\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*(?:0|1|0?\\.\\d+)\\s*\\)$" },
     "shadow_color": { "type": "string", "pattern": "^rgba\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*(?:0|1|0?\\.\\d+)\\s*\\)$" },
-    "shadow_width": { "type": "number", "minimum": 0 },
+    "shadow_width": { "type": "number", "minimum": 0, "maximum": 5, "$comment": "UI slider range 0-5 (index.html shadow_width)" },
     "border_color": { "type": "string", "pattern": "^rgba\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*(?:0|1|0?\\.\\d+)\\s*\\)$" },
-    "font_scale": { "type": "number", "minimum": 0 },
+    "font_scale": { "type": "number", "minimum": 0.5, "maximum": 1.5, "$comment": "UI slider range 0.5-1.5 (index.html font_scale)" },
     "fast_ui_mode": { "type": "boolean" },
     "waifuMode": { "type": "boolean" },
-    "avatar_style": { "type": "integer", "enum": [0, 1] },
-    "chat_display": { "type": "integer", "enum": [0, 1] },
-    "toastr_position": { "type": "string" },
+    "avatar_style": { "type": "integer", "enum": [0, 1, 2, 3], "$comment": "0 circle, 1 rectangle, 2 square, 3 rounded (power-user.js avatar_styles)" },
+    "chat_display": { "type": "integer", "enum": [0, 1, 2], "$comment": "0 flat, 1 bubbles, 2 document (power-user.js chat_styles)" },
+    "toastr_position": { "type": "string", "enum": ["toast-top-left", "toast-top-center", "toast-top-right", "toast-bottom-left", "toast-bottom-center", "toast-bottom-right"], "$comment": "power-user.js toastPositionClasses" },
     "noShadows": { "type": "boolean" },
-    "chat_width": { "type": "number", "minimum": 0 },
+    "chat_width": { "type": "number", "minimum": 25, "maximum": 100, "$comment": "vw, UI slider range 25-100 (index.html chat_width_slider)" },
     "timer_enabled": { "type": "boolean" },
     "timestamps_enabled": { "type": "boolean" },
     "timestamp_model_icon": { "type": "boolean" },
@@ -53,6 +53,6 @@
     "compact_input_area": { "type": "boolean" },
     "show_swipe_num_all_messages": { "type": "boolean" },
     "click_to_edit": { "type": "boolean" },
-    "media_display": { "type": "string" }
+    "media_display": { "type": "string", "enum": ["list", "gallery"], "$comment": "scripts/constants.js MEDIA_DISPLAY" }
   }
 }

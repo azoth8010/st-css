@@ -48,4 +48,4 @@ python build.py <slug> --check    # 只校验，不写文件
 
 [PolyForm Noncommercial License 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0)，全文见 `LICENSE`。
 
-可自由阅读、修改、在非商业作品里使用；**不得用于商业目的**。
+**不得用于商业目的**。
